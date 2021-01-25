@@ -4,7 +4,6 @@ import {AppError} from "src/shared/error/AppError";
 import {BalancesheetService} from "./balancesheet/balancesheet.service";
 import {ResponsibleCreateInDTO} from "./dto/create-in.dto";
 import {ResponsibleCreateDTO} from "./dto/create.dto";
-import {ResponsibleDTO} from "./dto/responsible.dto";
 import {ResponsibleNotWithRelationsDTO} from "./dto/responsibleNotRelations.dto";
 import {ResponsibleRepository} from "./responsible.respository";
 
@@ -17,12 +16,26 @@ export class ResponsibleService {
     private balancesheetService: BalancesheetService,
   ) {}
 
+  async import(file) {
+    console.log(file);
+  }
+
   async findById(_id: string) {
     const checkResponsible = await this.responsibleRepository.findOne(_id);
 
     if (!checkResponsible) throw new AppError("Responsible not exists");
 
     return checkResponsible;
+  }
+
+  async findByCompany(companyId: string): Promise<any> {
+    const checkExistsCompany = await this.responsibleRepository.findByRelations(
+      {
+        companyId,
+      },
+      ["balancesheet"],
+    );
+    return checkExistsCompany[0];
   }
 
   async findByCompanyId(
@@ -61,5 +74,13 @@ export class ResponsibleService {
     );
 
     return balanceSheet;
+  }
+
+  async delete(_id: number) {
+    const checkResponsible = await this.responsibleRepository.findById(_id);
+
+    if (!checkResponsible) throw new AppError("Responsible not exists");
+
+    this.responsibleRepository.destroy(checkResponsible);
   }
 }

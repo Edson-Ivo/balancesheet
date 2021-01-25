@@ -11,10 +11,12 @@ export async function up(knex: Knex): Promise<void> {
     table.decimal("credit", 14, 2).notNullable();
     table.decimal("finalCash", 14, 2).notNullable();
     table
-    .uuid("responsible")
-    .references("_id")
-    .inTable("responsible")
-    .notNullable();
+      .uuid("responsible")
+      .references("_id")
+      .inTable("responsible")
+      .onDelete("CASCADE")
+      .onUpdate("CASCADE")
+      .notNullable();
     table.timestamps(undefined, true);
   });
 }

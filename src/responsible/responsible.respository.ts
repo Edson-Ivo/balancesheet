@@ -2,6 +2,7 @@ import {Responsible} from "./responsible.entity";
 import {DeepPartial, EntityRepository, Repository} from "typeorm";
 import {QueryParams} from "src/shared/dto/queryParams.dto";
 import {ResponsibleCreateDTO} from "./dto/create.dto";
+import {AllowedRelation} from "./interface/allowRelations";
 
 @EntityRepository(Responsible)
 export class ResponsibleRepository extends Repository<Responsible> {
@@ -20,6 +21,16 @@ export class ResponsibleRepository extends Repository<Responsible> {
 
   async findBy(paramToSearch) {
     return this.findOne({where: paramToSearch});
+  }
+
+  async findByRelations(
+    paramToSearch,
+    relations: AllowedRelation[],
+  ) {
+    return this.find({
+      where: paramToSearch,
+      relations,
+    });
   }
 
   store(responsibleToCreate: ResponsibleCreateDTO) {

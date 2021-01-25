@@ -6,23 +6,29 @@ import {
   Param,
   Post,
   Put,
+  Query,
   ValidationPipe,
 } from "@nestjs/common";
+import {CustomSuccessResponse} from "src/shared/dto/customResponse.dto";
 import {ResponsibleCreateInDTO} from "./dto/create-in.dto";
-import {ResponsibleCreateDTO} from "./dto/create.dto";
+import {ResponsibleDTO} from "./dto/responsible.dto";
 import {ResponsibleService} from "./responsible.service";
 
 @Controller("responsible")
 export class ResponsibleController {
   constructor(private responsibleService: ResponsibleService) {}
-  @Get("read/all")
-  async readAll() {
-    return "read all";
-  }
+  @Get("read/company/:companyId")
+  async readById(@Param() param) {
+    const responsibleToCompany = await this.responsibleService.findByCompany(
+      param.companyId,
+    );
 
-  @Get("read/id/:id")
-  async readById() {
-    return "read by id";
+    return new ResponsibleDTO(
+      responsibleToCompany._id,
+      responsibleToCompany.companyId,
+      responsibleToCompany.date,
+      responsibleToCompany.balancesheet,
+    );
   }
 
   @Post("import/:id")
@@ -39,16 +45,19 @@ export class ResponsibleController {
       param.companyId,
       createResponsible,
     );
-    return createdResponsible;
+
+    return new ResponsibleDTO(
+      createdResponsible._id,
+      createdResponsible.companyId,
+      createdResponsible.date,
+      createdResponsible.balanceSheet,
+    );
   }
 
-  @Put()
-  async update() {
-    return "update";
-  }
+  @Delete(":_id")
+  async delete(@Param() param) {
+    await this.responsibleService.delete(param._id);
 
-  @Delete()
-  async delete() {
-    return "delete";
+    return new CustomSuccessResponse("Responsible removed");
   }
 }
