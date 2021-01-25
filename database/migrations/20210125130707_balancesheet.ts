@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
     table.decimal("credit", 14, 2).notNullable();
     table.decimal("finalCash", 14, 2).notNullable();
     table
-    .uuid("fk_responsible")
+    .uuid("responsible")
     .references("_id")
     .inTable("responsible")
     .notNullable();
