@@ -59,7 +59,7 @@ export class ResponsibleService {
   async findById(_id: string) {
     const checkResponsible = await this.responsibleRepository.findOne(_id);
 
-    if (!checkResponsible) throw new AppError("Responsible not exists");
+    if (!checkResponsible) throw new AppError("Responsible not exists", 404);
 
     return checkResponsible;
   }
@@ -81,7 +81,7 @@ export class ResponsibleService {
       companyId,
     });
 
-    if (!checkResponsible) throw new AppError("Responsible not exists");
+    if (!checkResponsible) throw new AppError("Responsible not exists", 404);
 
     return checkResponsible;
   }
@@ -115,7 +115,7 @@ export class ResponsibleService {
   async delete(_id: number) {
     const checkResponsible = await this.responsibleRepository.findById(_id);
 
-    if (!checkResponsible) throw new AppError("Responsible not exists");
+    if (!checkResponsible) throw new AppError("Responsible not exists", 404);
 
     this.responsibleRepository.destroy(checkResponsible);
   }
