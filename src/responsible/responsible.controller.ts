@@ -7,9 +7,14 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
+  UseInterceptors,
   ValidationPipe,
 } from "@nestjs/common";
+import {FileInterceptor} from "@nestjs/platform-express";
+import {diskStorage} from "multer";
 import {CustomSuccessResponse} from "src/shared/dto/customResponse.dto";
+import {editFileName} from "src/shared/upload/utils/upload-files";
 import {ResponsibleCreateInDTO} from "./dto/create-in.dto";
 import {ResponsibleDTO} from "./dto/responsible.dto";
 import {ResponsibleService} from "./responsible.service";
@@ -31,9 +36,31 @@ export class ResponsibleController {
     );
   }
 
-  @Post("import/:id")
-  async import() {
-    return "import all";
+  @Post("import/:companyId")
+  @UseInterceptors(
+    FileInterceptor("file", {
+      fileFilter: (req, file, cb) => {
+        if (!file.originalname.match(/\.(txt)$/)) {
+          req.fileErrors = {
+            error: true,
+          };
+          return cb(null, false);
+        }
+        return cb(null, true);
+      },
+      storage: diskStorage({
+        destination: "./upload",
+        filename: editFileName,
+      }),
+    }),
+  )
+  async import(@Param() param, @UploadedFile() file) {
+    const createToImportFile = await this.responsibleService.import(
+      param.companyId,
+      file,
+    );
+
+    return createToImportFile;
   }
 
   @Post("create/:companyId")
