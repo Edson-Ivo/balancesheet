@@ -6,7 +6,7 @@ import {AppController} from "./app.controller";
 import {Connection} from "typeorm";
 import {AppService} from "./app.service";
 import {SharedModule} from "./shared/shared.module";
-import { BalanceteModule } from './modules/balancete/balancete.module';
+import { ResponsibleModule } from './responsible/responsible.module';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { BalanceteModule } from './modules/balancete/balancete.module';
       entities: ["./dist/src/**/*.entity.js"],
     }),
     SharedModule,
-    BalanceteModule,
+    ResponsibleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
